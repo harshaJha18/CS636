@@ -1,0 +1,40 @@
+
+Note: to run this project on Windows or Linux/Mac with H2 (easiest way):
+0. Linux/Mac only: use "chmod +x *.sh database/*.sh" to make all shell scripts executable.
+
+1. cd to the database directory here.
+   Then "runMavenSql h2file createdb"  (runMavenSql.sh on Linux/Mac) to load the H2 database using createdb.sql
+   Note: this does not work on topcat yet. But you can use "ant load-h2".
+   Alternatively, use "runH2Script createdb.sql" (runH2Script.sh on Linux/Mac).
+   
+2. Use "mvn clean package" when cd'd to this directory to build the jar (in the target subdirectory)
+
+3. Then "runOnH2 SystemTest"  (runOnH2.sh on Linux/Mac) to run SystemTest out of the jar
+   Similarly "runOnH2 TakeOrder" and "runOnH2 ShopAdmin"
+
+To use a real DB: you need to define environment variables.
+ For Oracle database, set up env variables ORACLE_USER, ORACLE_PW, ORACLE_SITE
+ For MySQL use, set up env vars MYSQL_USER, MYSQL_PW, MYSQL_SITE
+ To run these at home, you need to set up tunnels for the JDBC connections.
+See DatabaseSetup linked to the class web page.
+
+Actions that can be performed by system:
+
+ 1- Student Actions:
+  
+       a- Order a Pizza.
+       b- Ask for status of Pizza
+       c- Acknowledge receipt of a baked pizza
+
+ 2- Administrative actions:
+      
+      a- Build the system from scratch with new tables.
+      b- Initialize the system from stored tables in database (Six tables) 
+      c- Add new Topping
+      d- Delete Topping
+      e- Add new pizza Size
+      f- Delete pizza Size
+      g- Advance the Day
+      h- make Next order Ready
+      i- Report on in-progress orders
+ 

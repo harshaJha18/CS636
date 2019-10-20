@@ -1,0 +1,107 @@
+
+<!-- We don't need Oracle and mysql dependencies here for compiling because 
+	we supply JDBC parameters at runtime, and this pom.xml just handles building 
+	the program, not running it. However the assembly step (building the jar 
+	with all dependencies, here simply named pizza2-1.jar) needs to see the 
+	Oracle and Mysql dependencies. To run SystemTest with H2:
+	jar -cp target/pizza2-1.jar SystemTest. See runOnH2, runOnOracle, etc. 
+	The env vars ORACLE_SITE, etc. are used by runOnOracle-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cs636</groupId>
+	<artifactId>pizza2</artifactId>
+	<version>1</version>
+	<name>pizza2</name>
+	<description>pizza project using Maven, Spring Boot, JPA, JUnit</description>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<!-- override defaults of Java 1.6 here
+			This replaces the maven-compiler plugin config
+			used in pizza1's pom.xml -->
+		<maven.compiler.source>1.8</maven.compiler.source>
+   		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+	<repositories>
+		<!-- for Oracle driver, used by sql plugin -->
+		<repository>
+			<id>datanucleus</id>
+			<name>repo with ojdbc6</name>
+			<url>http://www.datanucleus.org/downloads/maven2/</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<!-- Note lack of version info on these dependencies (except Oracle driver). 
+		Their versions are specified by the parent spring-boot-starter-parent. 
+		But we still need to list them here to use them. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<!-- Oracle and mysql dependencies for building the all-dependencies jar -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.3</version>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- H2, an embedded database -->
+		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>  <!-- put in all-dependencies jar too -->
+		</dependency>
+	</dependencies>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.2.RELEASE</version>
+		<relativePath />
+	</parent>
+	<build>
+		<plugins>
+			<plugin>
+				<!-- build executable jar with all dependencies -->
+				<!-- now that we are using spring, it's a little easier to do this -->
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<!-- ClientApplication is the only main class we need to execute in this jar,
+						so we set it as the main class in the jar's metadata. Then java -jar thisjar.jar
+						will execute this class -->
+					<mainClass>cs636.pizza.presentation.ClientApplication</mainClass>
+					<layout>JAR</layout>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

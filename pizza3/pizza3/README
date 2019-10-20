@@ -1,0 +1,38 @@
+
+Note: to run this project on Windows or Linux/Mac with the embedded DB H2 (easiest way):
+0. If running on topcat, edit src/main/resources/application.properties and
+  set the port to one of your assigned ports, preferably xxxx2 to follow
+  our conventions (for example, 51302). See CS636Ports.html for your ports.
+
+1. Load the pizza database if needed (this uses same db as in pizza1)
+   cd to the database directory here.
+   and use the db tools there, same as in pizza1
+   
+2. Use "mvn package" when cd'd to this directory to build the jar
+
+3. On Linux or Mac, use "chmod +x *.sh" to make all shell scripts in this directory
+ executable, and similarly for the database directory. 
+
+4. Run the program to start tomcat with the webapp: using convenience script
+    runJarByProfile h2 web  (Windows)   
+or  runJarByProfile.sh h2 web (Linux or Mac)
+or using mvn directly (see contents of runMvnByProfile). Either way, let it hang.
+
+5. Browse to localhost:9002/welcome.html to see pizza shop site. Replace 9002 here
+with your own port ending in 2 if running on topcat.
+
+6. Run all the JUnit tests with mvn test. They are also run during mvn package.
+
+7. The old line-oriented programs can be run outside of tomcat:
+    runJarByProfile h2 SystemTest  (Windows)   (or TakeOrder or ShopAdmin)
+or  runJarByProfile.sh h2 SystemTest  (Linux or Mac)
+
+To use a real DB: you need to define environment variables 
+ For Oracle database, set up env variables ORACLE_USER, ORACLE_PW, ORACLE_SITE
+  For MySQL use, set up env vars MYSQL_USER, MYSQL_PW, MYSQL_SITE
+
+Then these are accessed from the profiles to set up the JDBC config.
+So you can run simply  runJarByProfile oracle web   for example, and
+let it hang.
+
+  

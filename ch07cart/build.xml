@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!--CS636 ch07cart servlet example build file
+    We make a *portable* build.xml by setting up the platform-dependent
+    locations in environment variables and accessing them from here.
+    These are CATALINA_HOME and TOMCAT_URL (use tomcat.bash for Linux)
+    This build file assumes assumes there is a src tree of
+    sources and a WebContent/WEB-INF/web.xml file already there.
+    We use the ant project name (here servlet1) as the webapp name.
+-->
+<project name="ch07cart" default="build" basedir=".">
+   <!--grab onto environment variables as follows -->
+   <property environment="env"/>
+   <property name="CATALINA_HOME" value="${env.CATALINA_HOME}"/>
+   <property name="TOMCAT_URL" value="${env.TOMCAT_URL}"/>
+   <property name="deploy.dir" value="${CATALINA_HOME}/webapps/${ant.project.name}"/>
+   <property name="classes.dir" value="WebContent/WEB-INF/classes"/>
+	<!--a servlet needs the servlet API for compilation -->
+    <path id="project.classpath">
+        <pathelement location="${classes.dir}"/>
+        <pathelement location="${CATALINA_HOME}/lib/servlet-api.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="${classes.dir}"/>
+    </target>
+    <target name="clean">
+        <delete dir="${classes.dir}"/>
+    </target>
+    <target name="build" depends="init">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac destdir="${classes.dir}" debug="on" includeantruntime="false">
+            <src path="src"/>
+            <classpath refid="project.classpath"/>
+        </javac>
+    </target>
+
+    <!-- It's hard to run browsers under scripts, but wget curl do the job-->
+    <!-- curl and wget are on UMB Linux systems, and curl is on Macs, and is
+         available for PCs, as is wget.
+         (wget.exe is in tomcat's bin in provided tomcat.zip, and
+         we are assuming that tomcat's bin is in your path
+         so that startup.bat and shutdown.bat or work, so
+         wget should work on PCs without more installations)-->
+    <target name="test1">
+        <echo message="running wget"/>
+        <exec executable="wget"> 
+          <arg line="${TOMCAT_URL}/${ant.project.name}/"/>
+        </exec>
+    </target>
+    <target name="test1c">
+        <echo message="running curl"/>
+        <exec executable="curl"> 
+          <arg line="${TOMCAT_URL}/${ant.project.name}/"/>
+        </exec>
+    </target>
+    <target name="test2c">
+        <echo message="running curl for post"/>
+        <exec executable="curl"> 
+          <arg line=" --data productCode=pf01 ${TOMCAT_URL}/${ant.project.name}/cart"/>
+        </exec>
+    </target>
+
+    <!-- simple deployment: copy WebContent file tree to webapps area -->
+    <!-- also, clean up first -->
+    <target name="deploy" depends="build">
+        <delete dir="${deploy.dir}"/>
+        <copy todir="${deploy.dir}"> 
+            <fileset dir="WebContent"/>
+        </copy>
+    </target>
+</project>

@@ -1,0 +1,17 @@
+Note: to run this project on UNIX/Linux/Mac or Windows:
+0. For Linux/Mac only: Use "chmod +x *.sh" to make all shell scripts 
+	in this directory executable.  Similarly in the database directory.
+   
+1. If running on topcat, edit src/main/resources/application.properties and
+set the port to one of your assigned ports, preferably xxxx0 (your first port)
+to follow our conventions (for example, 51300). See CS636Ports.html for your ports.
+
+2. Use "mvn clean package" when cd'd to this directory to build the jar
+
+3. Use "run" (or run.sh) to run the webapp out of the jar (this starts
+the embedded tomcat server). Let it hang.
+
+4. Browse to localhost:9000/emailList to see the form. Replace 9000 here
+with your own first port if running on topcat.
+
+5. When done, control-C the run process to bring down the server.

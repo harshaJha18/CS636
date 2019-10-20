@@ -1,0 +1,26 @@
+Note: to run this project on UNIX/Linux/Mac or Windows with H2 (easiest way):
+0. For Linux/Mac only: Use "chmod +x *.sh" database/*.sh to make all shell scripts 
+	in this directory and the database directory executable.
+	
+1. cd to the database directory here.
+   then "runH2Script createdb.sql"  to load the H2 database. 
+   Linux/Mac: runH2Script.sh createdb.sql
+   
+2. Use "mvn package" when cd'd to this directory to build the jar
+ 
+3. Use "runOnH2 SystemTest" (or runOnH2.sh) to run SystemTest out of the jar
+
+To use a real DB: you need to define environment variables 
+ For Oracle database, set up env variables ORACLE_USER, ORACLE_PW, ORACLE_SITE
+  For MySQL use, set up env vars MYSQL_USER, MYSQL_PW, MYSQL_SITE
+For Linux at cs.umb.edu, put these lines in your .profile:
+# change these to fit your accounts--
+ORACLE_USER=xxxx; export ORACLE_USER
+ORACLE_PW=xxxx; export ORACLE_PW
+ORACLE_SITE=dbs3.cs.umb.edu:1521:dbs3; export ORACLE_SITE  (or localhost:1521 + tunnel)
+MYSQL_USER=xxxx; export MYSQL_USER
+MYSQL_PW=xxxx; export MYSQL_PW
+MYSQL_SITE=topcat.cs.umb.edu; export MYSQL_SITE (or localhost:3333 + tunnel)
+
+Then use "runOnOracle SystemTest", etc. 
+

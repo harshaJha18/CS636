@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"	
+             version="2.1">
+	<persistence-unit name="pizza2hib" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<class>cs636.pizza.domain.PizzaTopping</class>
+		<class>cs636.pizza.domain.PizzaSize</class>
+	    <class>cs636.pizza.domain.MenuTopping</class>
+		<class>cs636.pizza.domain.MenuSize</class>	
+		<class>cs636.pizza.domain.PizzaOrder</class>
+		<properties>
+			<!-- database-specific JDBC params (DB user, password, etc.) are specified by 
+				Java code in PizzaSystemConfig.java -->   	            
+			<!-- Configure simple SQL logging: comment this out (and rebuild .jar) to clean up output 
+			-->
+			<property name="hibernate.show_sql" value="true"/>			
+			<property name="hibernate.format_sql" value="true"/> 
+
+			<!-- set serializable isolation -->
+			<property name="hibernate.connection.isolation" value="8"/>	
+		</properties>
+	</persistence-unit>
+</persistence>
+
