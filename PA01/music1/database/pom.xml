@@ -1,0 +1,137 @@
+<!-- Database creation, destruction, and table display
+Depends on environment variables 
+ ORACLE_SITE, ORACLE_USER, ORACLE_PW, MYSQL_SITE, MYSQL_USER, and MYSQL_PW.
+   ORACLE_SITE should be "localhost:1521:dbs3" at home (for tunnel to 
+      dbs3.cs.umb.edu), and "dbs3.cs.umb.edu:1521:dbs3" at cs.umb.edu. 
+   MYSQL_SITE should be "localhost:3333" at home (for tunnel to 
+      topcat.cs.umb.edu), and "topcat.cs.umb.edu:3306" at cs.umb.edu. 
+  H2, the embedded database, does not need a personal user/password
+  Here we call it h2file, since we are using it in its file-based mode
+
+Usage:  mvn sql:execute@createdb -Poracle          create and load tables in oracle db
+		mvn sql:execute@dropdb -Poracle            drop tables in oracle db
+		mvn sql:execute@showdb -Poracle            display tables in oracle
+   Similarly fpr mysql and h2file, for example:
+		mvn sql:execute@dropdb -Pmysql             drop tables in mysql
+		mvn sql:execute@createdb -Ph2file              create and load tables in h2file
+		
+To build the programs, see pom.xml in the base directory	
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cs636</groupId>
+	<artifactId>music1database</artifactId>
+	<version>1</version>
+	<name>music1database</name>
+	<description>Maven music1 database utilities</description>
+	<pluginRepositories>
+		<!-- for Oracle driver, used by sql plugin -->
+		<pluginRepository>
+			<id>datanucleus</id>
+			<name>repo with ojdbc6</name>
+			<url>http://www.datanucleus.org/downloads/maven2/</url>
+		</pluginRepository>
+	</pluginRepositories>
+	<profiles>
+		<profile>
+			<id>oracle</id>
+			<properties>
+				<dbDriver>oracle.jdbc.OracleDriver</dbDriver>
+				<dbUrl>jdbc:oracle:thin:@${env.ORACLE_SITE}</dbUrl>
+				<dbUsername>${env.ORACLE_USER}</dbUsername>
+				<dbPassword>${env.ORACLE_PW}</dbPassword>
+			</properties>
+		</profile>
+		<profile>
+			<id>mysql</id>
+			<properties>
+				<dbDriver>com.mysql.cj.jdbc.Driver</dbDriver>
+				<dbUrl>jdbc:mysql://${env.MYSQL_SITE}/${env.MYSQL_USER}db</dbUrl>
+				<dbUsername>${env.MYSQL_USER}</dbUsername>
+				<dbPassword>${env.MYSQL_PW}</dbPassword>
+			</properties>
+		</profile>
+		<profile>
+			<id>h2file</id>
+			<properties>
+				<dbDriver>org.h2.Driver</dbDriver>
+				<dbUrl>jdbc:h2:~/test-music</dbUrl>
+				<dbUsername>test</dbUsername>
+				<dbPassword></dbPassword>
+			</properties>
+		</profile>
+	</profiles>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>sql-maven-plugin</artifactId>
+				<version>1.5</version>
+				<dependencies>
+					<dependency>
+						<groupId>oracle</groupId>
+						<artifactId>ojdbc6</artifactId>
+						<version>11.2.0.3</version>
+						<scope>runtime</scope>
+					</dependency>
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>8.0.13</version>
+						<scope>runtime</scope>
+					</dependency>
+					<dependency>
+						<groupId>com.h2database</groupId>
+						<artifactId>h2</artifactId>
+						<version>1.4.197</version>
+						<scope>runtime</scope>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<driver>${dbDriver}</driver>  <!--using profile for mysql above -->
+					<url>${dbUrl}</url>
+					<username>${dbUsername}</username>
+					<password>${dbPassword}</password>
+				</configuration>
+				<executions>
+					<execution>
+						<id>dropdb</id>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<srcFiles>
+								<srcFile>dropdb.sql</srcFile>
+							</srcFiles>
+						</configuration>
+					</execution>
+					<execution>
+						<id>createdb</id>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<srcFiles>
+								<srcFile>createdb.sql</srcFile>
+							</srcFiles>
+						</configuration>
+					</execution>
+					<execution>
+						<id>showdb</id>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<printResultSet>true</printResultSet>
+							<srcFiles>
+								<srcFile>showdb.sql</srcFile>
+							</srcFiles>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

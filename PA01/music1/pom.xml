@@ -1,0 +1,88 @@
+
+<!-- We don't need Oracle and mysql dependencies here for compiling because 
+	we supply JDBC parameters at runtime, and this pom.xml just handles building 
+	the program, not running it. However the assembly step (building the jar 
+	with all dependencies) needs to see the Oracle and Mysql dependencies. To 
+	run SystemTest with H2: jar -cp target/music1-1-jar-with-dependencies.jar 
+	cs636.music.presentation.SystemTest. See runOnH2, and also see runOnOracle, 
+	etc. -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cs636</groupId>
+	<artifactId>music1</artifactId>
+	<version>1</version>
+	<name>music1</name>
+	<description>music project using Maven, JDBC, JUnit</description>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+	<repositories>
+		<!-- for Oracle driver, used by sql plugin -->
+		<repository>
+			<id>datanucleus</id>
+			<name>repo with ojdbc6</name>
+			<url>http://www.datanucleus.org/downloads/maven2/</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+		</dependency>
+		<!-- Oracle and mysql dependencies for building the all-dependencies jar -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.13</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.3</version>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- H2, an embedded database -->
+		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.197</version>
+			<scope>runtime</scope>  <!-- put in all-dependencies jar too -->
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- needed for topcat compiles: insist on using recent maven compiler 
+				plugin -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+			</plugin>
+			<plugin>
+				<!-- to build jar with needed classes from various jars -->
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.1.1</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase> <!-- bind to the packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
